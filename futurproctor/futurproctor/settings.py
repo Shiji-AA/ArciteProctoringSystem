@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'proctoring_database',
         'USER': 'postgres',
-        'PASSWORD': 'ram123',
+        'PASSWORD': 'shiji123',
         'HOST': 'localhost',
         'PORT': '5432',
     }

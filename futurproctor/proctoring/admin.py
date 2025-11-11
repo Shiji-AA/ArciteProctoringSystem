@@ -21,3 +21,4 @@ admin.site.register(CheatingEvent)
 admin.site.register(Exam)
 admin.site.register(CheatingImage)
 admin.site.register(CheatingAudio)
+
