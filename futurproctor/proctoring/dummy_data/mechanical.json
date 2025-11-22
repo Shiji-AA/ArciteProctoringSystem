@@ -1,0 +1,95 @@
+{
+    "subject": "Mechanical Engineering",
+    "questions": [
+        {
+            "id": 1,
+            "text": "What is the unit of force in the SI system?",
+            "option_a": "Newton",
+            "option_b": "Joule",
+            "option_c": "Pascal",
+            "option_d": "Watt",
+            "correct_answer": "A"
+        },
+        {
+            "id": 2,
+            "text": "Which law states that pressure applied to a confined fluid is transmitted equally in all directions?",
+            "option_a": "Pascal's Law",
+            "option_b": "Newton's First Law",
+            "option_c": "Bernoulli's Principle",
+            "option_d": "Boyle's Law",
+            "correct_answer": "A"
+        },
+        {
+            "id": 3,
+            "text": "What does a carburetor do in an internal combustion engine?",
+            "option_a": "Mixes air and fuel",
+            "option_b": "Ignites the fuel",
+            "option_c": "Cools the engine",
+            "option_d": "Lubricates moving parts",
+            "correct_answer": "A"
+        },
+        {
+            "id": 4,
+            "text": "Which cycle is used in petrol engines?",
+            "option_a": "Otto Cycle",
+            "option_b": "Diesel Cycle",
+            "option_c": "Rankine Cycle",
+            "option_d": "Brayton Cycle",
+            "correct_answer": "A"
+        },
+        {
+            "id": 5,
+            "text": "Which material is commonly used for manufacturing gears?",
+            "option_a": "Steel",
+            "option_b": "Plastic",
+            "option_c": "Rubber",
+            "option_d": "Glass",
+            "correct_answer": "A"
+        },
+        {
+            "id": 6,
+            "text": "Which device is used to measure pressure?",
+            "option_a": "Manometer",
+            "option_b": "Thermometer",
+            "option_c": "Hygrometer",
+            "option_d": "Tachometer",
+            "correct_answer": "A"
+        },
+        {
+            "id": 7,
+            "text": "Which engine part converts reciprocating motion to rotational motion?",
+            "option_a": "Crankshaft",
+            "option_b": "Piston",
+            "option_c": "Camshaft",
+            "option_d": "Flywheel",
+            "correct_answer": "A"
+        },
+        {
+            "id": 8,
+            "text": "What is the primary purpose of a flywheel?",
+            "option_a": "To store rotational energy",
+            "option_b": "To cool the engine",
+            "option_c": "To ignite fuel",
+            "option_d": "To measure torque",
+            "correct_answer": "A"
+        },
+        {
+            "id": 9,
+            "text": "What is the mechanical advantage of a simple machine?",
+            "option_a": "Ratio of output force to input force",
+            "option_b": "Ratio of speed to torque",
+            "option_c": "Amount of energy lost",
+            "option_d": "Amount of heat produced",
+            "correct_answer": "A"
+        },
+        {
+            "id": 10,
+            "text": "Which process involves removal of metal by cutting?",
+            "option_a": "Machining",
+            "option_b": "Casting",
+            "option_c": "Forging",
+            "option_d": "Welding",
+            "correct_answer": "A"
+        }
+    ]
+}

@@ -1,0 +1,95 @@
+{
+    "subject": "Civil Engineering",
+    "questions": [
+        {
+            "id": 1,
+            "text": "What is the primary ingredient that gives cement its binding property?",
+            "option_a": "Gypsum",
+            "option_b": "Clay",
+            "option_c": "Lime",
+            "option_d": "Silica",
+            "correct_answer": "C"
+        },
+        {
+            "id": 2,
+            "text": "Which test is used to determine the workability of concrete?",
+            "option_a": "Slump Test",
+            "option_b": "Compression Test",
+            "option_c": "Tensile Test",
+            "option_d": "Impact Test",
+            "correct_answer": "A"
+        },
+        {
+            "id": 3,
+            "text": "Which of the following is NOT a type of foundation?",
+            "option_a": "Shallow Foundation",
+            "option_b": "Deep Foundation",
+            "option_c": "Spread Foundation",
+            "option_d": "Rotating Foundation",
+            "correct_answer": "D"
+        },
+        {
+            "id": 4,
+            "text": "What is the typical water-cement ratio for good concrete?",
+            "option_a": "0.4 to 0.6",
+            "option_b": "1.0 to 1.5",
+            "option_c": "0.1 to 0.2",
+            "option_d": "0.8 to 1.0",
+            "correct_answer": "A"
+        },
+        {
+            "id": 5,
+            "text": "Which of the following materials is most commonly used for road pavement?",
+            "option_a": "Asphalt",
+            "option_b": "Brick",
+            "option_c": "Glass",
+            "option_d": "Lead",
+            "correct_answer": "A"
+        },
+        {
+            "id": 6,
+            "text": "What does the term 'curing' refer to in concrete construction?",
+            "option_a": "Hardening concrete by maintaining moisture",
+            "option_b": "Breaking old concrete",
+            "option_c": "Painting the surface",
+            "option_d": "Removing the formwork",
+            "correct_answer": "A"
+        },
+        {
+            "id": 7,
+            "text": "Which of the following loads is NOT a live load?",
+            "option_a": "Furniture load",
+            "option_b": "Moving vehicle load",
+            "option_c": "Wind load",
+            "option_d": "Human occupancy load",
+            "correct_answer": "C"
+        },
+        {
+            "id": 8,
+            "text": "Which instrument is used for measuring angles in surveying?",
+            "option_a": "Theodolite",
+            "option_b": "Barometer",
+            "option_c": "Hygrometer",
+            "option_d": "Compass",
+            "correct_answer": "A"
+        },
+        {
+            "id": 9,
+            "text": "Which brick manufacturing process provides the highest strength?",
+            "option_a": "Wire-cut bricks",
+            "option_b": "Hand-molded bricks",
+            "option_c": "Sun-dried bricks",
+            "option_d": "Pressed bricks",
+            "correct_answer": "D"
+        },
+        {
+            "id": 10,
+            "text": "Which of the following is used to prevent soil erosion along riverbanks?",
+            "option_a": "Retaining walls",
+            "option_b": "Dams",
+            "option_c": "Gabions",
+            "option_d": "Bridges",
+            "correct_answer": "C"
+        }
+    ]
+}

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +11,15 @@
     rel="stylesheet"
   />
   <style>
+    .logo {
+      height: 40px;
+      width: auto;
+    }
+    .navbar {
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      background-color: white;
+      padding: 10px 0;
+    }
     .timer {
       font-size: 1.2rem;
       font-weight: bold;
@@ -17,15 +27,28 @@
     .question-card {
       border: 1px solid #ddd;
       border-radius: 8px;
-      padding: 15px;
+      padding: 30px;
       margin-bottom: 20px;
       background-color: #f8f9fa;
+      min-height: 400px;
     }
     .option-tile {
-      padding: 10px;
+      padding: 15px;
       border: 1px solid #ccc;
       border-radius: 5px;
-      margin: 5px 0;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .option-tile input[type="radio"] {
+      margin: 0;
+      cursor: pointer;
+    }
+    .option-tile label {
+      margin: 0;
       cursor: pointer;
     }
     .option-tile:hover,
@@ -38,16 +61,44 @@
       color: white;
       font-size: 1.2rem;
     }
-    /* Position the warning alert at the top-right */
+    .question-hidden {
+      display: none;
+    }
+    .navigation-btn {
+      font-size: 1.1rem;
+      padding: 10px 30px;
+    }
+    .question-timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #dc3545;
+    }
+    .progress-bar-container {
+      margin-bottom: 20px;
+    }
     #warning-alert {
       position: fixed;
       top: 20px;
       right: 20px;
       z-index: 1000;
+      background-color: #FF0000;
+      color: white;
+      font-weight: bold;
+      display: none;
     }
   </style>
 </head>
+
 <body>
+  <!-- Navbar with Logo -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="{% static 'images/logoArcite.png' %}" alt="ArciteProctor Logo" class="logo">
+      </a>
+    </div>
+  </nav>
+
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-8 offset-md-2">
@@ -63,12 +114,20 @@
 
         <!-- Tab Switch Counter -->
         <div class="alert alert-danger text-center" id="tab-warning">
-          Tab Switches: <span id="tab-count">{{ tab_count }},</span>/5
+          Tab Switches: <span id="tab-count">{{ tab_count }}</span>/5
         </div>
 
-        <!-- Timer -->
-        <div id="timer" class="timer text-center mb-3">
-          Time Left: <span id="time"></span>
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+          <div class="progress">
+            <div id="progress-bar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%"></div>
+          </div>
+          <p class="text-center mt-2">Question <span id="current-question-num">1</span> of <span id="total-questions">{{ questions|length }}</span></p>
+        </div>
+
+        <!-- Question Timer -->
+        <div id="question-timer" class="question-timer text-center mb-3">
+          Time for this question: <span id="question-time">20</span>s
         </div>
 
         <!-- Questions -->
@@ -77,9 +136,9 @@
           <input type="hidden" name="username" value="{{ user.first_name }}" />
 
           {% for question in questions %}
-          <div class="question-card">
-            <p class="question-text">
-              <strong>{{ forloop.counter }}.</strong> {{ question.text }}
+          <div class="question-card question-slide" data-question-index="{{ forloop.counter0 }}" style="{% if forloop.counter0 != 0 %}display: none;{% endif %}">
+            <p class="question-text fs-5 mb-4">
+              <strong>Question {{ forloop.counter }}:</strong> {{ question.text }}
             </p>
             <div class="option-tile" onclick="selectOption(this, 'q{{ question.id }}a')">
               <input
@@ -87,60 +146,118 @@
                 name="answer_{{ question.id }}"
                 id="q{{ question.id }}a"
                 value="A"
-                required
               />
-              <label for="q{{ question.id }}a">A. {{ question.option_a }}</label>
+              <label for="q{{ question.id }}a" class="w-100 cursor-pointer">A. {{ question.option_a }}</label>
             </div>
             <div class="option-tile" onclick="selectOption(this, 'q{{ question.id }}b')">
               <input type="radio" name="answer_{{ question.id }}" id="q{{ question.id }}b" value="B" />
-              <label for="q{{ question.id }}b">B. {{ question.option_b }}</label>
+              <label for="q{{ question.id }}b" class="w-100 cursor-pointer">B. {{ question.option_b }}</label>
             </div>
             <div class="option-tile" onclick="selectOption(this, 'q{{ question.id }}c')">
               <input type="radio" name="answer_{{ question.id }}" id="q{{ question.id }}c" value="C" />
-              <label for="q{{ question.id }}c">C. {{ question.option_c }}</label>
+              <label for="q{{ question.id }}c" class="w-100 cursor-pointer">C. {{ question.option_c }}</label>
             </div>
             <div class="option-tile" onclick="selectOption(this, 'q{{ question.id }}d')">
               <input type="radio" name="answer_{{ question.id }}" id="q{{ question.id }}d" value="D" />
-              <label for="q{{ question.id }}d">D. {{ question.option_d }}</label>
+              <label for="q{{ question.id }}d" class="w-100 cursor-pointer">D. {{ question.option_d }}</label>
             </div>
           </div>
           {% endfor %}
 
-          <!-- Submit Button -->
-          <div class="text-center mt-4">
-            <button type="submit" class="btn submit-btn">Submit Exam</button>
+          <!-- Navigation Buttons -->
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" id="prev-btn" class="btn btn-secondary navigation-btn" onclick="previousQuestion()" disabled>
+              ← Previous
+            </button>
+            <button type="button" id="next-btn" class="btn btn-primary navigation-btn" onclick="nextQuestion()">
+              Next →
+            </button>
+            <button type="submit" id="submit-btn" class="btn submit-btn navigation-btn" style="display: none;">
+              Submit Exam
+            </button>
           </div>
         </form>
       </div>
     </div>
   </div>
 
-<!-- Real-time warning alert (now pure red) -->
-<div id="warning-alert" class="alert" style="display: none; background-color: #FF0000; color: white; font-weight: bold;"></div>
-
+  <!-- Real-time warning alert -->
+  <div id="warning-alert" class="alert"></div>
 
   <script>
-    // Timer Logic
-    let totalTime = 5 * 60; // 5 minutes in seconds
-    const timerElement = document.getElementById("time");
+    // Question navigation
+    let currentQuestionIndex = 0;
+    const totalQuestions = {{ questions|length }};
+    const questionSlides = document.querySelectorAll('.question-slide');
+    
+    // Question timer
+    let questionTimeLeft = 20;
+    let questionTimerInterval;
 
-    function startTimer() {
-      const timer = setInterval(() => {
-        const minutes = Math.floor(totalTime / 60);
-        const seconds = totalTime % 60;
-        timerElement.textContent = `${minutes}:${
-          seconds < 10 ? "0" : ""
-        }${seconds}`;
-
-        if (totalTime === 0) {
-          clearInterval(timer);
-          alert("Time's up! Submitting the exam.");
-          document.getElementById("exam-form").submit();
+    function startQuestionTimer() {
+      clearInterval(questionTimerInterval);
+      questionTimeLeft = 20;
+      const questionTimeElement = document.getElementById("question-time");
+      
+      questionTimerInterval = setInterval(() => {
+        questionTimeLeft--;
+        questionTimeElement.textContent = questionTimeLeft;
+        
+        if (questionTimeLeft === 0) {
+          clearInterval(questionTimerInterval);
+          // Auto-advance to next question
+          if (currentQuestionIndex < totalQuestions - 1) {
+            nextQuestion();
+          } else {
+            alert("Time's up! Submitting the exam.");
+            document.getElementById("exam-form").submit();
+          }
         }
-        totalTime--;
       }, 1000);
     }
-    window.onload = startTimer;
+
+    function showQuestion(index) {
+      // Hide all questions
+      questionSlides.forEach(slide => {
+        slide.style.display = 'none';
+      });
+      
+      // Show current question
+      questionSlides[index].style.display = 'block';
+      
+      // Update progress bar
+      const progress = ((index + 1) / totalQuestions) * 100;
+      document.getElementById('progress-bar').style.width = progress + '%';
+      document.getElementById('current-question-num').textContent = index + 1;
+      
+      // Update navigation buttons
+      document.getElementById('prev-btn').disabled = (index === 0);
+      
+      if (index === totalQuestions - 1) {
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+      } else {
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('submit-btn').style.display = 'none';
+      }
+      
+      // Restart question timer
+      startQuestionTimer();
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < totalQuestions - 1) {
+        currentQuestionIndex++;
+        showQuestion(currentQuestionIndex);
+      }
+    }
+
+    function previousQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        showQuestion(currentQuestionIndex);
+      }
+    }
 
     // Function to handle option selection
     function selectOption(optionTile, inputId) {
@@ -152,7 +269,14 @@
       document.getElementById(inputId).checked = true;
     }
 
-    // Fetch real-time warnings
+    // Initialize on load
+    window.onload = function() {
+      document.getElementById('total-questions').textContent = totalQuestions;
+      startQuestionTimer();
+      document.documentElement.requestFullscreen();
+    };
+
+    // Fetch real-time warnings from server
     function checkWarnings() {
       fetch("/get_warning/")
         .then((response) => response.json())
@@ -169,76 +293,94 @@
     // Prevent right-click
     document.addEventListener("contextmenu", (e) => e.preventDefault());
 
-    // Prevent tab switching
+    // Initialize tab switch count
+    let tabSwitchCount = {{ tab_count|default:0 }};
+    let lastVisibilityState = document.visibilityState;
+    let isRecordingSwitch = false; // Debounce flag
+
+    // Visibility-based tab switch handler
+    function tabSwitchHandler() {
+      if (lastVisibilityState === 'visible' && document.visibilityState === 'hidden') {
+        if (!isRecordingSwitch) {
+          recordTabSwitch("⚠️ Tab switch detected!");
+        }
+      }
+      lastVisibilityState = document.visibilityState;
+    }
+    document.addEventListener("visibilitychange", tabSwitchHandler);
+
+    // Unified warning + logging system
+    function showWarning(msg) {
+      const alertBox = document.getElementById("warning-alert");
+      alertBox.textContent = msg;
+      alertBox.style.display = "block";
+      setTimeout(() => (alertBox.style.display = "none"), 4000);
+    }
+
+    function recordTabSwitch(warningMsg) {
+      if (isRecordingSwitch) return; // Prevent duplicate calls
+      
+      isRecordingSwitch = true;
+      tabSwitchCount++;
+      document.getElementById("tab-count").textContent = tabSwitchCount;
+      
+      if (warningMsg) {
+        showWarning(warningMsg);
+      }
+
+      fetch("{% url 'record_tab_switch' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json"
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "terminated") {
+          alert(data.message);
+          window.location.href = "{% url 'exam_submission_success' %}";
+        } else if (tabSwitchCount >= 5) {
+          alert("You exceeded the allowed tab switches! The exam will be submitted.");
+          document.getElementById("exam-form").submit();
+        }
+      })
+      .catch(console.error)
+      .finally(() => {
+        // Reset flag after 1 second to allow next legitimate switch
+        setTimeout(() => {
+          isRecordingSwitch = false;
+        }, 1000);
+      });
+    }
+
+    // Window blur event logging (removed duplicate recordTabSwitch call)
     window.addEventListener("blur", () => {
-      alert("You cannot switch tabs or windows during the exam!");
       window.focus();
     });
 
-    // Prevent exiting fullscreen mode
+    // Fullscreen exit logging
     document.addEventListener("fullscreenchange", () => {
       if (!document.fullscreenElement) {
-        alert("You cannot exit fullscreen mode during the exam!");
+        showWarning("⚠️ You cannot exit fullscreen mode!");
         document.documentElement.requestFullscreen();
+        if (!isRecordingSwitch) {
+          recordTabSwitch(null); // Record but don't show duplicate warning
+        }
       }
     });
 
-    
-      // Enter fullscreen mode
-      document.documentElement.requestFullscreen();
-    
-      // Initialize the tab switch count (defaulting to 0 if not provided)
-      let tabSwitchCount = {{ tab_count|default:0 }};
-      
-      // Keep track of the previous visibility state
-      let lastVisibilityState = document.visibilityState;
-    
-      // Define the tab switch handler
-      function tabSwitchHandler() {
-        // Only count a switch if the page goes from 'visible' to 'hidden'
-        if (lastVisibilityState === 'visible' && document.visibilityState === 'hidden') {
-          tabSwitchCount++;
-          document.getElementById("tab-count").textContent = tabSwitchCount;
-    
-          // Send a POST request to record the tab switch
-          fetch("{% url 'record_tab_switch' %}", {
-            method: "POST",
-            headers: { "X-CSRFToken": "{{ csrf_token }}" },
-          })
-          .then(response => response.json())
-          .then(data => {
-             // If termination condition is met, alert and redirect (or submit termination logic)
-             if (data.status === "terminated") {
-               alert(data.message);
-               // Redirect to a termination page or home (ensure you have this URL configured)
-               window.location.href = "{% url 'exam_submission_success' %}";
-             } else {
-               // Optionally alert on each tab switch when exam is ongoing
-               if (tabSwitchCount >= 1) {
-                 alert("Warning: Tab switch detected! Total switches: " + tabSwitchCount);
-               }
-             }
-          })
-          .catch(error => console.error('Error:', error));
-        }
-        // Update the last known visibility state
-        lastVisibilityState = document.visibilityState;
-      }
-    
-      // Listen for visibility changes
-      document.addEventListener("visibilitychange", tabSwitchHandler);
-    
-      // Prevent accidental closing or refreshing of the exam page
-      window.onbeforeunload = function () {
-        return "You are in the middle of an exam! Are you sure you want to leave?";
-      };
-    
-      // When the exam is submitted, remove the event listener and onbeforeunload warning
-      document.getElementById("exam-form").addEventListener("submit", function () {
-        window.onbeforeunload = null;
-        document.removeEventListener("visibilitychange", tabSwitchHandler);
-      });
-    </script>
-    
+    // Prevent accidental closing or refreshing
+    window.onbeforeunload = function () {
+      return "You are in the middle of an exam! Are you sure you want to leave?";
+    };
+
+    // Clean up on form submit
+    document.getElementById("exam-form").addEventListener("submit", function () {
+      window.onbeforeunload = null;
+      document.removeEventListener("visibilitychange", tabSwitchHandler);
+      clearInterval(questionTimerInterval);
+    });
+  </script>
 </body>
 </html>

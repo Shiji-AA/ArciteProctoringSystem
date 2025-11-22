@@ -1,0 +1,95 @@
+{
+    "subject": "Electrical Engineering",
+    "questions": [
+        {
+            "id": 1,
+            "text": "What is the unit of electrical resistance?",
+            "option_a": "Ohm",
+            "option_b": "Volt",
+            "option_c": "Watt",
+            "option_d": "Ampere",
+            "correct_answer": "A"
+        },
+        {
+            "id": 2,
+            "text": "Which law states that current is directly proportional to voltage?",
+            "option_a": "Ohm's Law",
+            "option_b": "Kirchhoff's Voltage Law",
+            "option_c": "Faraday's Law",
+            "option_d": "Lenz's Law",
+            "correct_answer": "A"
+        },
+        {
+            "id": 3,
+            "text": "What is a transformer used for?",
+            "option_a": "Changing voltage levels",
+            "option_b": "Generating electricity",
+            "option_c": "Storing electrical energy",
+            "option_d": "Converting AC to DC",
+            "correct_answer": "A"
+        },
+        {
+            "id": 4,
+            "text": "Which material is commonly used as a conductor?",
+            "option_a": "Copper",
+            "option_b": "Plastic",
+            "option_c": "Rubber",
+            "option_d": "Glass",
+            "correct_answer": "A"
+        },
+        {
+            "id": 5,
+            "text": "What is the frequency of AC supply in India?",
+            "option_a": "50 Hz",
+            "option_b": "40 Hz",
+            "option_c": "60 Hz",
+            "option_d": "30 Hz",
+            "correct_answer": "A"
+        },
+        {
+            "id": 6,
+            "text": "Which of the following is a DC machine?",
+            "option_a": "DC generator",
+            "option_b": "Induction motor",
+            "option_c": "Synchronous motor",
+            "option_d": "Alternator",
+            "correct_answer": "A"
+        },
+        {
+            "id": 7,
+            "text": "What type of motor is commonly used in household fans?",
+            "option_a": "Single-phase induction motor",
+            "option_b": "DC shunt motor",
+            "option_c": "Stepper motor",
+            "option_d": "Servo motor",
+            "correct_answer": "A"
+        },
+        {
+            "id": 8,
+            "text": "Which device converts AC to DC?",
+            "option_a": "Rectifier",
+            "option_b": "Inverter",
+            "option_c": "Transformer",
+            "option_d": "Capacitor",
+            "correct_answer": "A"
+        },
+        {
+            "id": 9,
+            "text": "The power factor of a purely resistive circuit is:",
+            "option_a": "1",
+            "option_b": "0",
+            "option_c": "0.5",
+            "option_d": "-1",
+            "correct_answer": "A"
+        },
+        {
+            "id": 10,
+            "text": "Which law explains electromagnetic induction?",
+            "option_a": "Faraday's Law",
+            "option_b": "Coulomb's Law",
+            "option_c": "Ohm's Law",
+            "option_d": "Gauss's Law",
+            "correct_answer": "A"
+        }
+    ]
+}

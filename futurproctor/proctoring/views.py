@@ -5,14 +5,18 @@ from django.contrib import messages  # Displaying success/error messages
 from django.contrib.auth.decorators import login_required, user_passes_test  # Restricting views to logged-in users
 from django.contrib.auth.models import User  # Accessing Django's built-in User model
 from django.contrib.auth.hashers import make_password  # Hashing passwords securely
-from django.contrib.auth import authenticate, login as auth_login  # Handling user authentication
+from django.contrib.auth import authenticate,logout as auth_logout, login as auth_login  # Handling user authentication
 from django.urls import reverse  # Generating dynamic URLs
 from django.views.decorators.csrf import csrf_exempt  # Disabling CSRF protection for certain views (Use cautiously)
 from django.utils.timezone import now  # Getting timezone-aware current time
 from django.core.files.base import ContentFile  # Handling in-memory file storage
+from django.conf import settings
 import cv2
 import io
 from PIL import Image
+import os
+import json
+import threading
 
 # Models
 from .models import Student, Exam, CheatingEvent, CheatingImage, CheatingAudio  # Importing custom models
@@ -39,20 +43,21 @@ from .ml_models.gaze_tracking import gaze_tracking # Tracking eye gaze to detect
 # Fix: Import face_recognition (Previously missing)
 import face_recognition  # Used for facial recognition, comparing student faces with stored images
 
-# Fix: Proper datetime handling for Nepal Time Zone (Asia/Kathmandu)
+# Fix: Proper datetime handling for india Time Zone (Asia/Kathmandu)
 import pytz  # For timezone handling
 from datetime import datetime  # Standard date and time handling
 
-# Define Nepal Time Zone
-NEPAL_TZ = pytz.timezone('Asia/Kathmandu')
+# Define india Time Zone
 
-# Function to get Nepal's current time
-def get_nepal_time():
+INDIA_TZ = pytz.timezone('Asia/Kolkata')
+
+# Function to get india's current time
+def get_india_time():
     """
-    Returns the current time in Nepal's timezone.
+    Returns the current time in india's timezone.
     This ensures all timestamps are consistent with the local time.
     """
-    return datetime.now(NEPAL_TZ)
+    return datetime.now(INDIA_TZ)
 
 
 # Home page view
@@ -79,6 +84,7 @@ def registration(request):
         name = request.POST['name']
         address = request.POST['address']
         email = request.POST['email']
+        department = request.POST.get('department')
         password = request.POST['password']
         captured_photo = request.POST.get('photo_data')  # Base64 image data
 
@@ -106,7 +112,7 @@ def registration(request):
             # Create a new User instance
             user = User.objects.create(
                 username=email,  # Use email as username for uniqueness
-                email=email,
+                email=email,                
                 first_name=name.split(' ')[0],  # Extract first name
                 last_name=' '.join(name.split(' ')[1:]) if ' ' in name else '',  # Extract last name if available
                 password=make_password(password),  # Hash password for security
@@ -118,6 +124,7 @@ def registration(request):
                 name=name,
                 address=address,
                 email=email,
+                department=department,
                 photo=ContentFile(img_data, name=f"{name}_photo.jpg"),  # Save the uploaded image
                 face_encoding=face_encoding.tolist(),  # Convert NumPy array to list
             )
@@ -315,15 +322,15 @@ def dashboard(request):
 from django.utils import timezone
 import pytz
 
-# Define Nepal Time Zone
-NEPAL_TZ = pytz.timezone('Asia/Kathmandu')
+# Define india Time Zone
+INDIA_TZ = pytz.timezone('Asia/Kathmandu')
 
-# Helper function to get Nepal time
-def get_nepal_time():
-    return timezone.now().astimezone(NEPAL_TZ)
+# Helper function to get india time
+def get_india_time():
+    return timezone.now().astimezone(INDIA_TZ)
 
-def get_nepal_time_str():
-    return get_nepal_time().strftime('%Y-%m-%d %I:%M:%S %p %Z')
+def get_india_time_str():
+    return get_india_time().strftime('%Y-%m-%d %I:%M:%S %p %Z')
 
 
 logger = logging.getLogger(__name__)
@@ -484,43 +491,59 @@ def save_cheating_event(frame, request, cheating_event, detected_objects=None, a
     except Exception as e:
         logger.error(f"Error saving cheating event: {e}")
 
-## Exam Page View
+
+# Map department → JSON file
+DEPT_FILES = {
+    "Electrical": "electrical.json",
+    "Mechanical": "mechanical.json",
+    "Civil": "civil.json",
+    "Computer": "cs.json",
+    "AI": "ai.json",
+}
 @login_required
 def exam(request):
-    """Start the exam and initialize proctoring."""
+
+    # Get student object
     try:
-        # Get the Student instance associated with the logged-in user
         student = request.user.student
     except Student.DoesNotExist:
-        # Handle the case where the user does not have a linked Student instance
-        return HttpResponse("Student profile not found. Please contact support.", status=404)
+        return HttpResponse("Student profile not found.", status=404)
 
-    # Get the tab switch count from the CheatingEvent model
+    # Get department in proper format
+    department = (student.department or "").strip()
+
+    # Select correct file
+    filename = DEPT_FILES.get(department)
+
+    if not filename:
+        return HttpResponse(f"No question file mapped for department: {department}", status=404)
+
+    # Build full path
+    questions_path = os.path.join(
+        settings.BASE_DIR,
+        "proctoring",
+        "dummy_data",
+        filename
+    )
+
+    # Load JSON
+    try:
+        with open(questions_path, "r") as f:
+            data = json.load(f)
+        questions = data.get("questions", [])
+    except Exception as e:
+        return HttpResponse(f"Error loading questions: {str(e)}", status=500)
+
+    # Get tab violations
     violations = CheatingEvent.objects.filter(student=student).first()
     tab_count = violations.tab_switch_count if violations else 0
 
-    # Load exam questions from the JSON file
-    try:
-        with open(r"D:\Arcite\ArciteProctoringSystem\AI-Based-online-exam-proctoring-System\futurproctor\proctoring\dummy_data\ai.json") as file:
-            data = json.load(file)
-        questions = data.get("questions", [])
-    except FileNotFoundError:
-        return HttpResponse("Error: Questions file not found!", status=404)
-    except json.JSONDecodeError:
-        return HttpResponse("Error: Failed to parse the questions file!", status=400)
-
-    # Start background processing threads for video and audio monitoring
-    global stop_event
-    stop_event.clear()  # Reset the stop event flag
-    threading.Thread(target=background_processing, args=(request,), daemon=True).start()
-    threading.Thread(target=process_audio, args=(request,), daemon=True).start()
-
-    # Render the exam template with questions and tab count
-    return render(request, 'exam.html', {
-        'questions': questions,
-        'warning': warning,
-        'tab_count': tab_count,
+    # Render
+    return render(request, "exam.html", {
+        "questions": questions,
+        "tab_count": tab_count,
     })
+
 
 # Submit exam
 @login_required
@@ -685,7 +708,8 @@ def proctor_notifications(request):
 
 ## Logout
 def logout(request):
-    return render(request,'home.html')
+    auth_logout(request)  # This clears the session and logs out the user
+    return redirect('home')  # Redirect to home page (or render 'home.html')
 
 # ----------------------Admin Plus Report Page ---------------------------------------
 
