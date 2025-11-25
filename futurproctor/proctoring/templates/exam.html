@@ -184,7 +184,7 @@
   <!-- Real-time warning alert -->
   <div id="warning-alert" class="alert"></div>
 
-  <script>
+<script>
     // Question navigation
     let currentQuestionIndex = 0;
     const totalQuestions = {{ questions|length }};
@@ -205,7 +205,6 @@
         
         if (questionTimeLeft === 0) {
           clearInterval(questionTimerInterval);
-          // Auto-advance to next question
           if (currentQuestionIndex < totalQuestions - 1) {
             nextQuestion();
           } else {
@@ -217,20 +216,16 @@
     }
 
     function showQuestion(index) {
-      // Hide all questions
       questionSlides.forEach(slide => {
         slide.style.display = 'none';
       });
       
-      // Show current question
       questionSlides[index].style.display = 'block';
       
-      // Update progress bar
       const progress = ((index + 1) / totalQuestions) * 100;
       document.getElementById('progress-bar').style.width = progress + '%';
       document.getElementById('current-question-num').textContent = index + 1;
       
-      // Update navigation buttons
       document.getElementById('prev-btn').disabled = (index === 0);
       
       if (index === totalQuestions - 1) {
@@ -241,7 +236,6 @@
         document.getElementById('submit-btn').style.display = 'none';
       }
       
-      // Restart question timer
       startQuestionTimer();
     }
 
@@ -259,7 +253,6 @@
       }
     }
 
-    // Function to handle option selection
     function selectOption(optionTile, inputId) {
       const questionCard = optionTile.closest(".question-card");
       questionCard.querySelectorAll(".option-tile").forEach((tile) => {
@@ -269,14 +262,12 @@
       document.getElementById(inputId).checked = true;
     }
 
-    // Initialize on load
     window.onload = function() {
       document.getElementById('total-questions').textContent = totalQuestions;
       startQuestionTimer();
       document.documentElement.requestFullscreen();
     };
 
-    // Fetch real-time warnings from server
     function checkWarnings() {
       fetch("/get_warning/")
         .then((response) => response.json())
@@ -290,15 +281,13 @@
     }
     setInterval(checkWarnings, 5000);
 
-    // Prevent right-click
     document.addEventListener("contextmenu", (e) => e.preventDefault());
 
     // Initialize tab switch count
     let tabSwitchCount = {{ tab_count|default:0 }};
     let lastVisibilityState = document.visibilityState;
-    let isRecordingSwitch = false; // Debounce flag
+    let isRecordingSwitch = false;
 
-    // Visibility-based tab switch handler
     function tabSwitchHandler() {
       if (lastVisibilityState === 'visible' && document.visibilityState === 'hidden') {
         if (!isRecordingSwitch) {
@@ -309,7 +298,6 @@
     }
     document.addEventListener("visibilitychange", tabSwitchHandler);
 
-    // Unified warning + logging system
     function showWarning(msg) {
       const alertBox = document.getElementById("warning-alert");
       alertBox.textContent = msg;
@@ -318,7 +306,7 @@
     }
 
     function recordTabSwitch(warningMsg) {
-      if (isRecordingSwitch) return; // Prevent duplicate calls
+      if (isRecordingSwitch) return;
       
       isRecordingSwitch = true;
       tabSwitchCount++;
@@ -337,50 +325,55 @@
       })
       .then(response => response.json())
       .then(data => {
-        if (data.status === "terminated") {
-          alert(data.message);
+        // Check server response OR local count
+        if (data.status === "terminated" || data.count >= 5 || tabSwitchCount >= 5) {
+          // Immediately disable all exam functionality
+          window.onbeforeunload = null;
+          document.removeEventListener("visibilitychange", tabSwitchHandler);
+          clearInterval(questionTimerInterval);
+          
+          // Alert and redirect
+          alert("Your exam has been terminated due to excessive tab switching.");
           window.location.href = "{% url 'exam_submission_success' %}";
-        } else if (tabSwitchCount >= 5) {
-          alert("You exceeded the allowed tab switches! The exam will be submitted.");
-          document.getElementById("exam-form").submit();
         }
       })
-      .catch(console.error)
+      .catch(error => {
+        console.error('Error:', error);
+        // Even if server fails, check local count
+        if (tabSwitchCount >= 5) {
+          window.onbeforeunload = null;
+          alert("Your exam has been terminated due to excessive tab switching.");
+          window.location.href = "{% url 'exam_submission_success' %}";
+        }
+      })
       .finally(() => {
-        // Reset flag after 1 second to allow next legitimate switch
+        // Shorter debounce: 300ms
         setTimeout(() => {
           isRecordingSwitch = false;
-        }, 1000);
+        }, 300);
       });
     }
 
-    // Window blur event logging (removed duplicate recordTabSwitch call)
     window.addEventListener("blur", () => {
       window.focus();
     });
 
-    // Fullscreen exit logging
     document.addEventListener("fullscreenchange", () => {
       if (!document.fullscreenElement) {
         showWarning("⚠️ You cannot exit fullscreen mode!");
         document.documentElement.requestFullscreen();
-        if (!isRecordingSwitch) {
-          recordTabSwitch(null); // Record but don't show duplicate warning
-        }
       }
     });
 
-    // Prevent accidental closing or refreshing
     window.onbeforeunload = function () {
       return "You are in the middle of an exam! Are you sure you want to leave?";
     };
 
-    // Clean up on form submit
     document.getElementById("exam-form").addEventListener("submit", function () {
       window.onbeforeunload = null;
       document.removeEventListener("visibilitychange", tabSwitchHandler);
       clearInterval(questionTimerInterval);
     });
-  </script>
+</script>
 </body>
 </html>

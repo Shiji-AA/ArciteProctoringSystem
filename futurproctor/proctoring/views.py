@@ -1,4 +1,5 @@
 # Django Core Imports
+
 from django.shortcuts import render, redirect, get_object_or_404  # Rendering templates, redirecting, and fetching objects
 from django.http import JsonResponse, StreamingHttpResponse, HttpResponse, HttpResponseRedirect  # Handling HTTP responses
 from django.contrib import messages  # Displaying success/error messages
@@ -11,11 +12,8 @@ from django.views.decorators.csrf import csrf_exempt  # Disabling CSRF protectio
 from django.utils.timezone import now  # Getting timezone-aware current time
 from django.core.files.base import ContentFile  # Handling in-memory file storage
 from django.conf import settings
-import cv2
 import io
 from PIL import Image
-import os
-import json
 import threading
 
 # Models
@@ -323,7 +321,7 @@ from django.utils import timezone
 import pytz
 
 # Define india Time Zone
-INDIA_TZ = pytz.timezone('Asia/Kathmandu')
+INDIA_TZ = pytz.timezone('Asia/Kolkata')
 
 # Helper function to get india time
 def get_india_time():
@@ -497,11 +495,17 @@ DEPT_FILES = {
     "Electrical": "electrical.json",
     "Mechanical": "mechanical.json",
     "Civil": "civil.json",
-    "Computer": "cs.json",
+    "ComputerScience": "cs.json",
     "AI": "ai.json",
 }
+
 @login_required
 def exam(request):
+
+    global stop_event
+
+    # Reset stop_event every time a new exam starts
+    stop_event.clear()
 
     # Get student object
     try:
@@ -509,16 +513,16 @@ def exam(request):
     except Student.DoesNotExist:
         return HttpResponse("Student profile not found.", status=404)
 
-    # Get department in proper format
+    # Normalize department (avoid spaces / cases mismatching)
     department = (student.department or "").strip()
 
     # Select correct file
     filename = DEPT_FILES.get(department)
 
     if not filename:
-        return HttpResponse(f"No question file mapped for department: {department}", status=404)
+        return HttpResponse(f"No question file mapped for department: '{department}'", status=404)
 
-    # Build full path
+    # Full JSON file path
     questions_path = os.path.join(
         settings.BASE_DIR,
         "proctoring",
@@ -526,7 +530,7 @@ def exam(request):
         filename
     )
 
-    # Load JSON
+    # Load JSON file
     try:
         with open(questions_path, "r") as f:
             data = json.load(f)
@@ -538,40 +542,60 @@ def exam(request):
     violations = CheatingEvent.objects.filter(student=student).first()
     tab_count = violations.tab_switch_count if violations else 0
 
-    # Render
+    # -------- Start Video & Audio Threads ONLY ONCE --------
+    if not getattr(request, "_threads_started", False):
+        threading.Thread(target=background_processing, args=(request,), daemon=True).start()
+        threading.Thread(target=process_audio, args=(request,), daemon=True).start()
+        request._threads_started = True
+
+    # Render exam page
     return render(request, "exam.html", {
         "questions": questions,
         "tab_count": tab_count,
     })
 
 
+
 # Submit exam
+
 @login_required
 def submit_exam(request):
     if request.method == 'POST':
-        # Stop the background threads
         global stop_event
-        stop_event.set()
+        stop_event.set()  # Stop background threads
+
         user = request.user
 
-        # Load questions from ai.json
-        try:
-            with open('D:\\Arcite\\ArciteProctoringSystem\\AI-Based-online-exam-proctoring-System\\futurproctor\\proctoring\\dummy_data\\ai.json', 'r') as file:
-               data = json.load(file)
-        except FileNotFoundError:
-            return HttpResponse("Error: Questions file not found!", status=404)
-        except json.JSONDecodeError:
-            return HttpResponse("Error: Failed to parse the questions file!", status=400)
+        # Load questions file based on student's department
+        department = user.student.department
+        dept_file = DEPT_FILES.get(department, None)
 
-        questions = data.get('questions', [])
+        if not dept_file:
+            return HttpResponse("Invalid department for questions file", status=400)
+
+        questions_path = os.path.join(
+            settings.BASE_DIR,
+            "proctoring",
+            "dummy_data",
+            dept_file
+        )
+
+        # Load questions
+        try:
+            with open(questions_path, "r") as file:
+                data = json.load(file)
+        except Exception as e:
+            return HttpResponse(f"Error loading question file: {str(e)}", status=500)
+
+        questions = data.get("questions", [])
         total_questions = len(questions)
         correct_answers = 0
 
         # Check answers
-        for question in questions:
-            question_id = question['id']
-            user_answer = request.POST.get(f'answer_{question_id}')
-            if user_answer == question['correct_answer']:
+        for q in questions:
+            qid = q['id']
+            user_answer = request.POST.get(f'answer_{qid}')
+            if user_answer == q['correct_answer']:
                 correct_answers += 1
 
         # Save exam result
@@ -583,80 +607,84 @@ def submit_exam(request):
         )
         exam.save()
 
-        # Redirect to success page
+        # -------------------- EMAIL SENDING --------------------
+        from django.core.mail import send_mail
+
+        try:
+            subject = "Exam Submission Confirmation"
+            message = (
+                f"Hello {user.student.name},\n\n"
+                f"Your exam has been successfully submitted.\n"
+                f"Score: {correct_answers}/{total_questions}\n"
+                f"Percentage: {round((correct_answers / total_questions)*100, 2)}%\n\n"
+                f"Your results will be published within 3 days.\n\n"
+                "Thank you for using our proctoring system!"
+            )
+
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [user.student.email],
+                fail_silently=False
+            )
+        except Exception as e:
+            print("EMAIL ERROR:", e)
+        # -------------------------------------------------------
+
         messages.success(request, 'You have successfully completed the exam!')
         return redirect('exam_submission_success')
 
     return HttpResponse("Invalid request method.", status=400)
 
-# Tab switch tracking
-stop_event = threading.Event()
 
-
+ 
 # Set up logging
 logger = logging.getLogger(__name__)
 
 # Tab switch tracking View
+
 @login_required
 def record_tab_switch(request):
     if request.method == "POST":
-        # Get the current student
         student = request.user.student
-        logger.info(f"Student: {student}")
 
-        # # Get the active exam for the student
-        # active_exam = Exam.objects.filter(student=student, status='ongoing').first()
-        # if not active_exam:
-        #     logger.error("No active exam found for the student")
-        #     return JsonResponse({"error": "No active exam found for the student"}, status=400)
+        # Get exam
+        exam = Exam.objects.filter(student=student, status="ongoing").first()
+        if not exam:
+            return JsonResponse({
+                "status": "error",
+                "message": "No active exam found"
+            }, status=400)
 
-        # logger.info(f"Active Exam: {active_exam}")
-
-        # Get or create a CheatingEvent for the student and exam
-        cheating_event, created = CheatingEvent.objects.get_or_create(
-            student=student,
-            # exam=active_exam,
-            event_type='tab_switch',  # Specify the event type
-            defaults={
-                'cheating_flag': False,
-                'tab_switch_count': 0,
-            }
-        )
-
-        logger.info(f"Cheating Event: {cheating_event}, Created: {created}")
-
-        # Increment the tab switch count
-        cheating_event.tab_switch_count += 1
-        logger.info(f"Updated Tab Switch Count: {cheating_event.tab_switch_count}")
-
-        # Set cheating_flag based on tab_switch_count
-        cheating_event.cheating_flag = cheating_event.tab_switch_count >= 1
-        logger.info(f"Cheating Flag: {cheating_event.cheating_flag}")
-
-        # Save the updated CheatingEvent
-        cheating_event.save()
-        logger.info("Cheating Event saved successfully")
-
-        # If tab switches exceed 5, take action
-        if cheating_event.tab_switch_count > 5:
-            stop_event.set()  # Stop background threads (ensure stop_event is defined)
-            logger.info("Tab switches exceeded 5, terminated from the exam")
+        # Increase count
+        exam.tab_switch_count += 1
+        
+        # Check if limit exceeded
+        if exam.tab_switch_count >= 5:
+            exam.status = "terminated"
+            exam.save()
             return JsonResponse({
                 "status": "terminated",
-                "message": "You have exceeded the allowed tab switches. Your exam is terminated."
-            }, status=200)
-        # Return a JSON response with the updated count and flag
+                "message": "Your exam has been terminated due to excessive tab switching.",
+                "count": exam.tab_switch_count
+            })
+        
+        # Save if under limit
+        exam.save()
+
+        # Normal response
         return JsonResponse({
-            "status": "updated",
-            "count": cheating_event.tab_switch_count,
-            "cheating_flag": cheating_event.cheating_flag,
-            "message": f"Tab switch detected! Total switches: {cheating_event.tab_switch_count}"
-        }, status=200)
+            "status": "ok",
+            "count": exam.tab_switch_count
+        })
 
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    return JsonResponse({
+        "status": "error",
+        "message": "Invalid method"
+    }, status=405)
 
-
-# Exam submission success page
+ # Exam submission success page
 def exam_submission_success(request):
     return render(request, 'exam_submission_success.html')
 

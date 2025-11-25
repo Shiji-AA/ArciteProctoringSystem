@@ -13,11 +13,7 @@ urlpatterns = [
     path('video_feed/', views.video_feed, name='video_feed'),  # For video feed
     # path('stop_event /', views.stop_event , name='stop_event'),
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('exam/', views.exam, name='exam'),
-    # path('exam/<str:department>/', views.exam, name='exam'),
-    # path('exam_entry',views.exam_entry,name='exam_entry'),
-    # path('select-department/', views.select_department, name='select_department'),
-    
+    path('exam/', views.exam, name='exam'),     
     path('submit_exam/', views.submit_exam, name='submit_exam'),
     path('exam_submission_success/', views.exam_submission_success, name='exam_submission_success'),
     path('result/', views.result, name='result'),

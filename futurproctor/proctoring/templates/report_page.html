@@ -25,13 +25,18 @@
     .zoomable-image:hover { transform: scale(1.1); }
     .cheating-incident { color: red; font-weight: bold; }
     .audio-player { width: 100%; margin-top: 10px; }
+    
+    /* Hide print button when printing */
+    @media print {
+      .print-btn { display: none; }
+    }
   </style>
 </head>
 <body>
   <div class="container mt-4 report-container">
-    <!-- Download Report Button at the Top Right -->
+    <!-- Print Report Button at the Top Right -->
     <div class="d-flex justify-content-end mb-3">
-      <a href="{% url 'download_report' student.id %}" class="btn btn-primary">Download Report</a>
+      <button onclick="window.print()" class="btn btn-primary print-btn">Print Report</button>
     </div>
 
     <h2 class="text-center text-primary mb-4">Student Examination Report</h2>
@@ -82,7 +87,7 @@
             {% else %}
               {{ total_tab_switch_count }}
             {% endif %}
-          </p>
+        </p>
       </div>
     </div>
     
