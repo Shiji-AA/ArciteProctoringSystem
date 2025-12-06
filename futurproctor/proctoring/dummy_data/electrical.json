@@ -1,95 +1,274 @@
 {
-    "subject": "Electrical Engineering",
-    "questions": [
-        {
-            "id": 1,
-            "text": "What is the unit of electrical resistance?",
-            "option_a": "Ohm",
-            "option_b": "Volt",
-            "option_c": "Watt",
-            "option_d": "Ampere",
-            "correct_answer": "A"
-        },
-        {
-            "id": 2,
-            "text": "Which law states that current is directly proportional to voltage?",
-            "option_a": "Ohm's Law",
-            "option_b": "Kirchhoff's Voltage Law",
-            "option_c": "Faraday's Law",
-            "option_d": "Lenz's Law",
-            "correct_answer": "A"
-        },
-        {
-            "id": 3,
-            "text": "What is a transformer used for?",
-            "option_a": "Changing voltage levels",
-            "option_b": "Generating electricity",
-            "option_c": "Storing electrical energy",
-            "option_d": "Converting AC to DC",
-            "correct_answer": "A"
-        },
-        {
-            "id": 4,
-            "text": "Which material is commonly used as a conductor?",
-            "option_a": "Copper",
-            "option_b": "Plastic",
-            "option_c": "Rubber",
-            "option_d": "Glass",
-            "correct_answer": "A"
-        },
-        {
-            "id": 5,
-            "text": "What is the frequency of AC supply in India?",
-            "option_a": "50 Hz",
-            "option_b": "40 Hz",
-            "option_c": "60 Hz",
-            "option_d": "30 Hz",
-            "correct_answer": "A"
-        },
-        {
-            "id": 6,
-            "text": "Which of the following is a DC machine?",
-            "option_a": "DC generator",
-            "option_b": "Induction motor",
-            "option_c": "Synchronous motor",
-            "option_d": "Alternator",
-            "correct_answer": "A"
-        },
-        {
-            "id": 7,
-            "text": "What type of motor is commonly used in household fans?",
-            "option_a": "Single-phase induction motor",
-            "option_b": "DC shunt motor",
-            "option_c": "Stepper motor",
-            "option_d": "Servo motor",
-            "correct_answer": "A"
-        },
-        {
-            "id": 8,
-            "text": "Which device converts AC to DC?",
-            "option_a": "Rectifier",
-            "option_b": "Inverter",
-            "option_c": "Transformer",
-            "option_d": "Capacitor",
-            "correct_answer": "A"
-        },
-        {
-            "id": 9,
-            "text": "The power factor of a purely resistive circuit is:",
-            "option_a": "1",
-            "option_b": "0",
-            "option_c": "0.5",
-            "option_d": "-1",
-            "correct_answer": "A"
-        },
-        {
-            "id": 10,
-            "text": "Which law explains electromagnetic induction?",
-            "option_a": "Faraday's Law",
-            "option_b": "Coulomb's Law",
-            "option_c": "Ohm's Law",
-            "option_d": "Gauss's Law",
-            "correct_answer": "A"
-        }
-    ]
+  "subject": "Electrical Engineering",
+  "questions": [
+    /* ================================
+       CRITICAL THINKING (5)
+       ================================ */
+    {
+      "id": 1,
+      "text": "Why does a transformer not work with DC supply?",
+      "option_a": "No changing magnetic flux",
+      "option_b": "Insulation fails",
+      "option_c": "Iron losses increase",
+      "option_d": "Copper losses increase",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+    {
+      "id": 2,
+      "text": "A motor is overheating. What should be checked first?",
+      "option_a": "Load exceeding rated capacity",
+      "option_b": "Paint on the motor",
+      "option_c": "Label color",
+      "option_d": "Switch type",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+    {
+      "id": 3,
+      "text": "Why is grounding essential in power systems?",
+      "option_a": "To avoid shock hazards",
+      "option_b": "To increase voltage",
+      "option_c": "To reduce resistance",
+      "option_d": "To increase frequency",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+    {
+      "id": 4,
+      "text": "An induction motor runs slower than synchronous speed because:",
+      "option_a": "Slip is required to induce current",
+      "option_b": "Friction is zero",
+      "option_c": "Supply frequency drops to zero",
+      "option_d": "Rotor is always faster",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+    {
+      "id": 5,
+      "text": "A fuse blows repeatedly. What is the logical first step?",
+      "option_a": "Check for short circuit or overload",
+      "option_b": "Replace fuse with bigger one",
+      "option_c": "Ignore the issue",
+      "option_d": "Change wire color",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+
+    /* ================================
+       COMMUNICATION (5)
+       ================================ */
+    {
+      "id": 6,
+      "text": "What is the best way to describe a wiring fault?",
+      "option_a": "Neutral-earth short detected in branch circuit",
+      "option_b": "Something is wrong",
+      "option_c": "Lights are weird",
+      "option_d": "Don't know",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+    {
+      "id": 7,
+      "text": "Which is the most precise instruction?",
+      "option_a": "Set voltage to 230V ± 2V",
+      "option_b": "Increase voltage",
+      "option_c": "Make voltage okay",
+      "option_d": "Adjust little bit",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+    {
+      "id": 8,
+      "text": "Why are standard electrical symbols important?",
+      "option_a": "Universal understanding",
+      "option_b": "Decoration",
+      "option_c": "Increase file size",
+      "option_d": "Marketing",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+    {
+      "id": 9,
+      "text": "Best way to report equipment failure?",
+      "option_a": "Clear written + verbal report",
+      "option_b": "Tell a friend",
+      "option_c": "Ignore it",
+      "option_d": "Write someday",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+    {
+      "id": 10,
+      "text": "Best documented instruction?",
+      "option_a": "Calibrate instrument at 50Hz, 230V",
+      "option_b": "Use instrument normally",
+      "option_c": "Operate safe",
+      "option_d": "Do it fast",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+
+    /* ================================
+       ADAPTABILITY (2)
+       ================================ */
+    {
+      "id": 11,
+      "text": "A new SCADA system is introduced. What should an engineer do?",
+      "option_a": "Learn and adapt",
+      "option_b": "Refuse",
+      "option_c": "Ignore it",
+      "option_d": "Complain",
+      "correct_answer": "A",
+      "competency_type": "adaptability"
+    },
+    {
+      "id": 12,
+      "text": "Sudden load variation requires:",
+      "option_a": "Quick adjustment of system controls",
+      "option_b": "Stop all processes",
+      "option_c": "Wait",
+      "option_d": "Panic",
+      "correct_answer": "A",
+      "competency_type": "adaptability"
+    },
+
+    /* ================================
+       BASIC ENGINEERING (5)
+       ================================ */
+    {
+      "id": 13,
+      "text": "Ohm’s law states:",
+      "option_a": "V = IR",
+      "option_b": "P = VI",
+      "option_c": "Q = CV",
+      "option_d": "I = Vt",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+    {
+      "id": 14,
+      "text": "Three-phase power frequency in India is:",
+      "option_a": "50 Hz",
+      "option_b": "40 Hz",
+      "option_c": "25 Hz",
+      "option_d": "100 Hz",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+    {
+      "id": 15,
+      "text": "Power factor is:",
+      "option_a": "Cosine of phase angle",
+      "option_b": "Sine of voltage",
+      "option_c": "Resistive load",
+      "option_d": "None",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+    {
+      "id": 16,
+      "text": "A transformer works on:",
+      "option_a": "Mutual induction",
+      "option_b": "Static friction",
+      "option_c": "Magnetostriction",
+      "option_d": "Radiation",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+    {
+      "id": 17,
+      "text": "A device used to measure current:",
+      "option_a": "Ammeter",
+      "option_b": "Voltmeter",
+      "option_c": "LCR meter",
+      "option_d": "Capacitor",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+
+    /* ================================
+       TECHNICAL (8) – MEDIUM LEVEL
+       ================================ */
+    {
+      "id": 18,
+      "text": "Slip in an induction motor is defined as:",
+      "option_a": "Difference between synchronous and rotor speed",
+      "option_b": "Voltage drop",
+      "option_c": "Resistance ratio",
+      "option_d": "Reactance factor",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 19,
+      "text": "Purpose of a capacitor in single-phase motors?",
+      "option_a": "Create phase shift",
+      "option_b": "Increase weight",
+      "option_c": "Heat winding",
+      "option_d": "Reduce torque",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 20,
+      "text": "A synchronous machine runs at:",
+      "option_a": "Constant speed",
+      "option_b": "Variable speed",
+      "option_c": "Zero speed",
+      "option_d": "Infinite speed",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 21,
+      "text": "Function of a circuit breaker?",
+      "option_a": "Interrupt fault current",
+      "option_b": "Generate power",
+      "option_c": "Increase frequency",
+      "option_d": "Reduce resistance",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 22,
+      "text": "Which reduces transmission loss?",
+      "option_a": "High voltage transmission",
+      "option_b": "Low voltage",
+      "option_c": "High current",
+      "option_d": "Heating cables",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 23,
+      "text": "Purpose of AVR in generators?",
+      "option_a": "Maintain constant voltage",
+      "option_b": "Increase torque",
+      "option_c": "Reduce speed",
+      "option_d": "Store charge",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 24,
+      "text": "Harmonics are caused by:",
+      "option_a": "Non-linear loads",
+      "option_b": "Pure resistors",
+      "option_c": "Balanced loads",
+      "option_d": "No-load condition",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 25,
+      "text": "Which device measures insulation resistance?",
+      "option_a": "Megger",
+      "option_b": "Ammeter",
+      "option_c": "Power meter",
+      "option_d": "Multimeter",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    }
+  ]
 }

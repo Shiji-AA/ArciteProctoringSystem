@@ -18,18 +18,20 @@ import threading
 
 # Models
 from .models import Student, Exam, CheatingEvent, CheatingImage, CheatingAudio  # Importing custom models
+from .services.simple_scoring import SimpleScoringService
+from proctoring.models import CompetencyScore
+from proctoring.services.simple_scoring import SimpleScoringService
+
 
 # External Library Imports
 import os  # Operating system utilities (e.g., file handling)
 import json  # JSON handling (e.g., parsing request data)
-import threading  # Running concurrent tasks (e.g., real-time monitoring)
 import base64  # Encoding and decoding base64 (used for image handling)
 import numpy as np  # Numerical operations, especially for image processing
 import cv2  # OpenCV for computer vision tasks (e.g., face recognition)
 import logging  # Logging errors and system activity
 import time  # Time-based operations (e.g., timestamps)
-from PIL import Image  # Image processing using the Pillow library
-import io  # Handling in-memory file operations
+
 
 # Machine Learning Imports (Custom AI Models for Proctoring)
 from .ml_models.object_detection import detectObject  # Detecting objects in the exam environment
@@ -286,7 +288,7 @@ def video_feed(request):
 
 
 # Stop video feed view
-def stop_event(request):
+def stop_exam_event(request):
     """
     Dummy endpoint for stopping the video feed.
     - Can be extended to handle cleanup or other actions when the video feed is stopped.
@@ -314,11 +316,8 @@ def dashboard(request):
     # Render the dashboard template with the context data
     return render(request, 'dashboard.html', context)
 
-
-
 # -------------------------Video Detection Thread----------------------------------
 from django.utils import timezone
-import pytz
 
 # Define india Time Zone
 INDIA_TZ = pytz.timezone('Asia/Kolkata')
@@ -329,7 +328,6 @@ def get_india_time():
 
 def get_india_time_str():
     return get_india_time().strftime('%Y-%m-%d %I:%M:%S %p %Z')
-
 
 logger = logging.getLogger(__name__)
 
@@ -423,7 +421,7 @@ def background_processing(request):
 
 
 # Helper function to create a WAV file from raw audio bytes
-import io
+
 import wave
 
 def create_wav_bytes(raw_audio, channels=1, sampwidth=2, framerate=48000):
@@ -495,15 +493,12 @@ DEPT_FILES = {
     "Electrical": "electrical.json",
     "Mechanical": "mechanical.json",
     "Civil": "civil.json",
-    "ComputerScience": "cs.json",
-    "AI": "ai.json",
+    "ComputerScience": "cs.json",  
 }
 
 @login_required
 def exam(request):
-
     global stop_event
-
     # Reset stop_event every time a new exam starts
     stop_event.clear()
 
@@ -557,21 +552,17 @@ def exam(request):
 
 
 # Submit exam
-
 @login_required
 def submit_exam(request):
     if request.method == 'POST':
         global stop_event
         stop_event.set()  # Stop background threads
-
         user = request.user
-
-        # Load questions file based on student's department
         department = user.student.department
         dept_file = DEPT_FILES.get(department, None)
 
         if not dept_file:
-            return HttpResponse("Invalid department for questions file", status=400)
+            return HttpResponse("Invalid department", status=400)
 
         questions_path = os.path.join(
             settings.BASE_DIR,
@@ -585,42 +576,60 @@ def submit_exam(request):
             with open(questions_path, "r") as file:
                 data = json.load(file)
         except Exception as e:
-            return HttpResponse(f"Error loading question file: {str(e)}", status=500)
+            return HttpResponse(f"Error loading questions: {str(e)}", status=500)
 
         questions = data.get("questions", [])
         total_questions = len(questions)
         correct_answers = 0
-
-        # Check answers
+        
+        # Collect user answers
+        user_answers = {}
         for q in questions:
             qid = q['id']
             user_answer = request.POST.get(f'answer_{qid}')
+            user_answers[str(qid)] = user_answer
             if user_answer == q['correct_answer']:
                 correct_answers += 1
 
-        # Save exam result
+        # ✨ NEW: Import and use scoring service
+        from proctoring.services.simple_scoring import SimpleScoringService
+        
+        # Create exam record
         exam = Exam(
             student=user.student,
             total_questions=total_questions,
             correct_answers=correct_answers,
-            timestamp=timezone.now()
+            timestamp=timezone.now(),
+            end_time=timezone.now(),
+            status='completed'
         )
         exam.save()
+        
+        # Calculate total score using competency weights
+        scoring_service = SimpleScoringService(exam)
+        total_score = scoring_service.calculate_total_score(questions, user_answers)
+        
+        exam.total_score = total_score
+        exam.calculate_completion_time()
+        exam.save()
+        
+        # Calculate rankings for all students
+        scoring_service.calculate_ranking()
 
-        # -------------------- EMAIL SENDING --------------------
+        # Send email (your existing code)
         from django.core.mail import send_mail
-
         try:
             subject = "Exam Submission Confirmation"
             message = (
                 f"Hello {user.student.name},\n\n"
                 f"Your exam has been successfully submitted.\n"
                 f"Score: {correct_answers}/{total_questions}\n"
-                f"Percentage: {round((correct_answers / total_questions)*100, 2)}%\n\n"
-                f"Your results will be published within 3 days.\n\n"
-                "Thank you for using our proctoring system!"
+                f"Total Score: {total_score:.0f}/105 points\n"
+                f"Rank: #{exam.rank}\n"
+                f"Percentile: {exam.percentile:.1f}%\n\n"
+                "Your detailed results will be available shortly.\n\n"
+                "Thank you!"
             )
-
             send_mail(
                 subject,
                 message,
@@ -630,10 +639,9 @@ def submit_exam(request):
             )
         except Exception as e:
             print("EMAIL ERROR:", e)
-        # -------------------------------------------------------
 
-        messages.success(request, 'You have successfully completed the exam!')
-        return redirect('exam_submission_success')
+        messages.success(request, 'Exam submitted successfully!')
+        return redirect('exam_submission_success')  # Changed redirect
 
     return HttpResponse("Invalid request method.", status=400)
 
@@ -656,10 +664,8 @@ def record_tab_switch(request):
                 "status": "error",
                 "message": "No active exam found"
             }, status=400)
-
         # Increase count
-        exam.tab_switch_count += 1
-        
+        exam.tab_switch_count += 1        
         # Check if limit exceeded
         if exam.tab_switch_count >= 5:
             exam.status = "terminated"
@@ -668,17 +674,14 @@ def record_tab_switch(request):
                 "status": "terminated",
                 "message": "Your exam has been terminated due to excessive tab switching.",
                 "count": exam.tab_switch_count
-            })
-        
+            })        
         # Save if under limit
         exam.save()
-
         # Normal response
         return JsonResponse({
             "status": "ok",
             "count": exam.tab_switch_count
         })
-
     return JsonResponse({
         "status": "error",
         "message": "Invalid method"
@@ -907,3 +910,172 @@ def download_report(request, student_id):
 
 def add_question(request):
     return render(request, 'add_question.html')  # Ensure you have this template
+
+
+# In views.py - student_result view
+# @login_required
+@login_required
+def student_result(request):
+    user = request.user
+
+    # Get last completed exam
+    exam = Exam.objects.filter(student=user.student, status="completed").latest("timestamp")
+
+    # Load questions from JSON
+    department = user.student.department
+    json_file = DEPT_FILES.get(department)
+    questions_path = os.path.join(settings.BASE_DIR, "proctoring", "dummy_data", json_file)
+
+    with open(questions_path, "r") as f:
+        data = json.load(f)
+        questions = data["questions"]
+
+    # answers stored in DB
+    user_answers = exam.user_answers  
+
+    # Scoring service instance
+    scoring = SimpleScoringService(exam)
+
+    # Competency-wise breakdown
+    competency_scores = CompetencyScore.objects.filter(exam=exam)
+
+    # Radar chart data
+    radar_labels = [c.competency_name.replace("_", " ").title() for c in competency_scores]
+    radar_values = [c.percentage for c in competency_scores]
+
+    # Get performance category text
+    def get_performance_category(percentile):
+        if percentile >= 90:
+            return "Top Performer"
+        elif percentile >= 75:
+            return "High Performer"
+        elif percentile >= 60:
+            return "Strong"
+        elif percentile >= 40:
+            return "Developing"
+        else:
+            return "Emerging"
+
+    performance = get_performance_category(exam.percentile)
+
+    # ---------------------------------------------------------
+    #        ADDITIONAL ANALYTICS & RECOMMENDATIONS
+    # ---------------------------------------------------------
+
+    improvement_priorities = scoring.compute_improvement_priorities()
+    recommended_courses = scoring.recommend_courses()
+    action_plan = scoring.generate_action_plan()
+    algorithm = scoring.algorithm_details()
+
+    # ⭐ BLOOM’S TAXONOMY LEVEL MAPPING
+    BLOOMS_MAP = {
+        "critical_thinking": "Analyze",
+        "communication": "Apply",
+        "adaptability": "Understand",
+        "basic_engineering": "Apply",
+        "technical": "Create"
+    }
+
+    blooms = {
+        c.competency_name: BLOOMS_MAP.get(c.competency_name, "Understand")
+        for c in competency_scores
+    }
+
+    # ⭐ JOB ROLE MAPPING
+    JOB_ROLE_MAP = {
+        "critical_thinking": ["Quality Analyst", "Process Engineer", "Business Analyst"],
+        "communication": ["Client Relations Associate", "Technical Writer", "Support Engineer"],
+        "adaptability": ["Project Coordinator", "Junior Engineer", "Operations Trainee"],
+        "basic_engineering": ["Maintenance Engineer", "Field Engineer", "Workshop Assistant"],
+        "technical": ["Design Engineer", "R&D Assistant", "Technical Specialist"]
+    }
+
+    job_roles = {
+        c.competency_name: JOB_ROLE_MAP.get(c.competency_name, [])
+        for c in competency_scores
+    }
+
+    # ⭐ DOMAIN / SKILL CATEGORY MAPPING
+    DOMAIN_MAP = {
+        "critical_thinking": "Cognitive Skills",
+        "communication": "Soft Skills",
+        "adaptability": "Behavioral Skills",
+        "basic_engineering": "Engineering Foundations",
+        "technical": "Technical Core Domain"
+    }
+
+    domain_strength_map = {
+        c.competency_name: DOMAIN_MAP.get(c.competency_name)
+        for c in competency_scores
+    }
+
+    # ⭐ BEHAVIORAL & FOUNDATIONAL SKILLS (from PDF)
+    FOUNDATIONAL_SKILLS = [
+        "Problem Solving",
+        "Teamwork",
+        "Time Management",
+        "Professional Communication",
+        "Self-Learning Ability"
+    ]
+
+    # ⭐ CAREER PATH ENGINE
+    def get_career_path(strengths):
+        if "technical" in strengths:
+            return (
+                "You show strong technical capability. "
+                "Recommended career tracks: Design Engineering, CAD Modeling, R&D Assistant, Core Engineering roles."
+            )
+        elif "communication" in strengths:
+            return (
+                "You excel in communication. "
+                "Great for client-facing engineering roles, coordination positions, and consulting tracks."
+            )
+        elif "critical_thinking" in strengths:
+            return (
+                "Strong analytical ability. "
+                "Suitable for Quality Analysis, Business Analysis, Process Optimization, or Data-driven roles."
+            )
+        else:
+            return (
+                "Your foundation is developing. "
+                "Strengthen engineering basics + communication to expand available career paths."
+            )
+
+    strengths = [c.competency_name for c in competency_scores if c.is_strength]
+    career_path = get_career_path(strengths)
+
+    # ---------------------------------------------------------
+    #               FINAL CONTEXT SENT TO TEMPLATE
+    # ---------------------------------------------------------
+
+    context = {
+        "student": exam.student,
+        "rank": exam.rank,
+        "percentile": round(exam.percentile, 2),
+        "total_score": exam.total_score,
+
+        # Core competency outputs
+        "competency_scores": competency_scores,
+        "performance_category": performance,
+
+        # Chart data
+        "radar_labels": radar_labels,
+        "radar_values": radar_values,
+
+        # Algorithm info
+        "algorithm": algorithm,
+
+        # Recommendations
+        "improvement_priorities": improvement_priorities,
+        "recommended_courses": recommended_courses,
+        "action_plan": action_plan,
+
+        # NEW ENHANCEMENT SECTIONS
+        "blooms": blooms,
+        "job_roles": job_roles,
+        "domain_strength_map": domain_strength_map,
+        "foundational_skills": FOUNDATIONAL_SKILLS,
+        "career_path": career_path,
+    }
+
+    return render(request, "student_result.html", context)

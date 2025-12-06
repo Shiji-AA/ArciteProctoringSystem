@@ -53,6 +53,8 @@ class Student(models.Model):
     def __str__(self):
         return self.name
 
+# In models.py - UPDATE your existing Exam model
+
 class Exam(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='exams', null=True, blank=True)
     exam_name = models.CharField(max_length=255, default='Default Exam Name')
@@ -65,6 +67,14 @@ class Exam(models.Model):
         default='ongoing'
     )
     percentage_score = models.FloatField(null=True, blank=True)
+    user_answers = models.JSONField(default=dict)
+    
+    # ✨ ADD THESE NEW FIELDS:
+    total_score = models.FloatField(default=0)  # Raw score out of 105
+    rank = models.IntegerField(null=True, blank=True)  # National rank
+    percentile = models.FloatField(null=True, blank=True)  # Percentile
+    completion_time = models.DurationField(null=True, blank=True)  # Time taken
+    end_time = models.DateTimeField(null=True, blank=True)  # When submitted
 
     def calculate_percentage(self):
         if self.total_questions and self.total_questions > 0:
@@ -72,6 +82,13 @@ class Exam(models.Model):
         else:
             self.percentage_score = 0.0
         self.save()
+    
+    # ✨ ADD THIS METHOD:
+    def calculate_completion_time(self):
+        """Calculate time taken to complete exam"""
+        if self.end_time and self.timestamp:
+            self.completion_time = self.end_time - self.timestamp
+            self.save()
 
     def __str__(self):
         return f"{self.exam_name} - {self.student.name}"
@@ -121,3 +138,34 @@ def save_cheating_audio(audio_data, cheating_event):
     except Exception as e:
         logger.error(f"Error saving cheating audio: {e}")
         return None
+    
+
+
+# Add to models.py - AFTER your existing models
+
+class CompetencyScore(models.Model):
+    """Stores detailed score breakdown for each competency/skill"""
+    
+    PERFORMANCE_LEVELS = [
+        ('advanced', 'Advanced'),
+        ('proficient', 'Proficient'),
+        ('developing', 'Developing'),
+        ('emerging', 'Emerging'),
+        ('novice', 'Novice'),
+    ]
+    
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE, related_name='competency_scores')
+    competency_name = models.CharField(max_length=50)  # e.g., 'critical_thinking'
+    raw_score = models.FloatField(default=0)  # Points earned (e.g., 15)
+    max_score = models.FloatField(default=0)  # Max possible (e.g., 20)
+    percentage = models.FloatField(default=0)  # Percentage (e.g., 75.0)
+    performance_level = models.CharField(max_length=20, choices=PERFORMANCE_LEVELS)
+    is_strength = models.BooleanField(default=False)  # Top 2 skills
+    is_weakness = models.BooleanField(default=False)  # Bottom 2 skills
+    
+    class Meta:
+        unique_together = ['exam', 'competency_name']
+        ordering = ['-percentage']
+    
+    def __str__(self):
+        return f"{self.competency_name}: {self.percentage}% ({self.performance_level})"

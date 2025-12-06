@@ -3,93 +3,253 @@
     "questions": [
         {
             "id": 1,
+            "text": "A metal ball is placed in water and floats. What can you conclude?",
+            "option_a": "Its density is less than water",
+            "option_b": "It repels water",
+            "option_c": "It dissolves in water",
+            "option_d": "It is magnetic",
+            "correct_answer": "A",
+            "competency_type": "critical_thinking"
+        },
+        {
+            "id": 2,
+            "text": "Which scenario best shows cause and effect?",
+            "option_a": "Increasing load causes beam deflection",
+            "option_b": "Steel is shiny",
+            "option_c": "Engines make noise",
+            "option_d": "Oil is slippery",
+            "correct_answer": "A",
+            "competency_type": "critical_thinking"
+        },
+        {
+            "id": 3,
+            "text": "Why do engineers perform stress analysis before manufacturing?",
+            "option_a": "To prevent failure",
+            "option_b": "To increase weight",
+            "option_c": "To decorate the product",
+            "option_d": "To change color",
+            "correct_answer": "A",
+            "competency_type": "critical_thinking"
+        },
+        {
+            "id": 4,
+            "text": "Which observation indicates a system inefficiency?",
+            "option_a": "Higher fuel consumption for same output",
+            "option_b": "Smooth rotation",
+            "option_c": "Low noise",
+            "option_d": "No vibrations",
+            "correct_answer": "A",
+            "competency_type": "critical_thinking"
+        },
+        {
+            "id": 5,
+            "text": "A machine overheats frequently. What should be checked first?",
+            "option_a": "Cooling system efficiency",
+            "option_b": "Paint colour",
+            "option_c": "Label markings",
+            "option_d": "User manual",
+            "correct_answer": "A",
+            "competency_type": "critical_thinking"
+        },
+        {
+            "id": 6,
+            "text": "What is the primary purpose of a technical drawing?",
+            "option_a": "To communicate design details",
+            "option_b": "For decoration",
+            "option_c": "To increase cost",
+            "option_d": "To confuse workers",
+            "correct_answer": "A",
+            "competency_type": "communication"
+        },
+        {
+            "id": 7,
+            "text": "Which statement is the most clear and precise?",
+            "option_a": "Tighten the bolt to 20 Nm torque",
+            "option_b": "Tighten the bolt a bit",
+            "option_c": "Tighten properly",
+            "option_d": "Make it tight enough",
+            "correct_answer": "A",
+            "competency_type": "communication"
+        },
+        {
+            "id": 8,
+            "text": "Which communication method is best for reporting a safety hazard?",
+            "option_a": "Immediate verbal + written report",
+            "option_b": "Ignore it",
+            "option_c": "Tell a friend",
+            "option_d": "Wait till next week",
+            "correct_answer": "A",
+            "competency_type": "communication"
+        },
+        {
+            "id": 9,
+            "text": "Why are standard symbols used in engineering drawings?",
+            "option_a": "To ensure universal understanding",
+            "option_b": "For decoration",
+            "option_c": "To confuse people",
+            "option_d": "To increase page count",
+            "correct_answer": "A",
+            "competency_type": "communication"
+        },
+        {
+            "id": 10,
+            "text": "Which instruction is MOST effective?",
+            "option_a": "Operate machine at 800 rpm for 2 minutes",
+            "option_b": "Operate normally",
+            "option_c": "Increase speed slightly",
+            "option_d": "Run it fast",
+            "correct_answer": "A",
+            "competency_type": "communication"
+        },
+        {
+            "id": 11,
+            "text": "A new machine software is introduced in the factory. What should you do?",
+            "option_a": "Learn and adapt to it",
+            "option_b": "Avoid using it",
+            "option_c": "Complain",
+            "option_d": "Ignore it",
+            "correct_answer": "A",
+            "competency_type": "adaptability"
+        },
+        {
+            "id": 12,
+            "text": "When a sudden change occurs in production scheduling, how should an engineer react?",
+            "option_a": "Adjust plans quickly",
+            "option_b": "Panic",
+            "option_c": "Wait for others",
+            "option_d": "Stop working",
+            "correct_answer": "A",
+            "competency_type": "adaptability"
+        },
+        {
+            "id": 13,
             "text": "What is the unit of force in the SI system?",
             "option_a": "Newton",
             "option_b": "Joule",
             "option_c": "Pascal",
             "option_d": "Watt",
-            "correct_answer": "A"
+            "correct_answer": "A",
+            "competency_type": "basic_engineering"
         },
         {
-            "id": 2,
-            "text": "Which law states that pressure applied to a confined fluid is transmitted equally in all directions?",
-            "option_a": "Pascal's Law",
-            "option_b": "Newton's First Law",
-            "option_c": "Bernoulli's Principle",
-            "option_d": "Boyle's Law",
-            "correct_answer": "A"
+            "id": 14,
+            "text": "Pascal's law relates to:",
+            "option_a": "Pressure transmission in fluids",
+            "option_b": "Heat transfer",
+            "option_c": "Electricity",
+            "option_d": "Magnetism",
+            "correct_answer": "A",
+            "competency_type": "basic_engineering"
         },
         {
-            "id": 3,
-            "text": "What does a carburetor do in an internal combustion engine?",
-            "option_a": "Mixes air and fuel",
-            "option_b": "Ignites the fuel",
-            "option_c": "Cools the engine",
-            "option_d": "Lubricates moving parts",
-            "correct_answer": "A"
+            "id": 15,
+            "text": "Machining is a process involving:",
+            "option_a": "Removal of metal by cutting",
+            "option_b": "Heating metal",
+            "option_c": "Painting metal",
+            "option_d": "Joining metal",
+            "correct_answer": "A",
+            "competency_type": "basic_engineering"
         },
         {
-            "id": 4,
+            "id": 16,
+            "text": "A crankshaft converts:",
+            "option_a": "Reciprocating to rotational motion",
+            "option_b": "Heat to light",
+            "option_c": "Rotation to electricity",
+            "option_d": "Sound to energy",
+            "correct_answer": "A",
+            "competency_type": "basic_engineering"
+        },
+        {
+            "id": 17,
+            "text": "A flywheel is used to:",
+            "option_a": "Store rotational energy",
+            "option_b": "Store chemical energy",
+            "option_c": "Generate electricity",
+            "option_d": "Measure temperature",
+            "correct_answer": "A",
+            "competency_type": "basic_engineering"
+        },
+        {
+            "id": 18,
             "text": "Which cycle is used in petrol engines?",
             "option_a": "Otto Cycle",
             "option_b": "Diesel Cycle",
             "option_c": "Rankine Cycle",
             "option_d": "Brayton Cycle",
-            "correct_answer": "A"
+            "correct_answer": "A",
+            "competency_type": "technical"
         },
         {
-            "id": 5,
-            "text": "Which material is commonly used for manufacturing gears?",
+            "id": 19,
+            "text": "What does a carburetor do?",
+            "option_a": "Mixes air and fuel",
+            "option_b": "Ignites fuel",
+            "option_c": "Cools engine",
+            "option_d": "Lubricates parts",
+            "correct_answer": "A",
+            "competency_type": "technical"
+        },
+        {
+            "id": 20,
+            "text": "What material is commonly used for gears?",
             "option_a": "Steel",
             "option_b": "Plastic",
             "option_c": "Rubber",
             "option_d": "Glass",
-            "correct_answer": "A"
+            "correct_answer": "A",
+            "competency_type": "technical"
         },
         {
-            "id": 6,
+            "id": 21,
             "text": "Which device is used to measure pressure?",
             "option_a": "Manometer",
             "option_b": "Thermometer",
             "option_c": "Hygrometer",
             "option_d": "Tachometer",
-            "correct_answer": "A"
+            "correct_answer": "A",
+            "competency_type": "technical"
         },
         {
-            "id": 7,
-            "text": "Which engine part converts reciprocating motion to rotational motion?",
-            "option_a": "Crankshaft",
-            "option_b": "Piston",
-            "option_c": "Camshaft",
-            "option_d": "Flywheel",
-            "correct_answer": "A"
+            "id": 22,
+            "text": "What improves engine efficiency?",
+            "option_a": "High compression ratio",
+            "option_b": "Poor lubrication",
+            "option_c": "Low temperature",
+            "option_d": "Small flywheel",
+            "correct_answer": "A",
+            "competency_type": "technical"
         },
         {
-            "id": 8,
-            "text": "What is the primary purpose of a flywheel?",
-            "option_a": "To store rotational energy",
-            "option_b": "To cool the engine",
-            "option_c": "To ignite fuel",
-            "option_d": "To measure torque",
-            "correct_answer": "A"
+            "id": 23,
+            "text": "In thermodynamics, the first law is about:",
+            "option_a": "Conservation of energy",
+            "option_b": "Entropy increase",
+            "option_c": "Heat rejection",
+            "option_d": "Perfect gas",
+            "correct_answer": "A",
+            "competency_type": "technical"
         },
         {
-            "id": 9,
-            "text": "What is the mechanical advantage of a simple machine?",
-            "option_a": "Ratio of output force to input force",
-            "option_b": "Ratio of speed to torque",
-            "option_c": "Amount of energy lost",
-            "option_d": "Amount of heat produced",
-            "correct_answer": "A"
+            "id": 24,
+            "text": "What is the function of lubrication?",
+            "option_a": "Reduce friction",
+            "option_b": "Increase weight",
+            "option_c": "Increase noise",
+            "option_d": "Increase vibration",
+            "correct_answer": "A",
+            "competency_type": "technical"
         },
         {
-            "id": 10,
-            "text": "Which process involves removal of metal by cutting?",
-            "option_a": "Machining",
-            "option_b": "Casting",
-            "option_c": "Forging",
-            "option_d": "Welding",
-            "correct_answer": "A"
+            "id": 25,
+            "text": "Gear ratio helps in:",
+            "option_a": "Changing torque and speed",
+            "option_b": "Measuring voltage",
+            "option_c": "Cooling engine",
+            "option_d": "Painting surfaces",
+            "correct_answer": "A",
+            "competency_type": "technical"
         }
     ]
 }

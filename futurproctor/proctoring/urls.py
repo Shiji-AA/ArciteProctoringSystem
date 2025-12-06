@@ -11,7 +11,7 @@ urlpatterns = [
     path('registration/', views.registration, name='registration'),
     path('login/', views.login, name='login'),
     path('video_feed/', views.video_feed, name='video_feed'),  # For video feed
-    # path('stop_event /', views.stop_event , name='stop_event'),
+    # path('stop_event/', views.stop_exam_event, name='stop_event'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('exam/', views.exam, name='exam'),     
     path('submit_exam/', views.submit_exam, name='submit_exam'),
@@ -20,6 +20,11 @@ urlpatterns = [
     path('get_warning/', views.get_warning, name='get_warning'),
     path('proctor_notifications/', views.proctor_notifications, name='proctor_notifications'),
     path('record_tab_switch/', views.record_tab_switch, name='record_tab_switch'),
+    #after exam final result
+    path('student-result/', views.student_result, name='student_result'),
+
+
+
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('report_page/<int:student_id>/', views.report_page, name='report_page'),
     path('logout/',views.logout, name='logout'),

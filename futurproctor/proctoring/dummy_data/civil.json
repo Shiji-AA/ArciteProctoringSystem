@@ -1,95 +1,274 @@
 {
-    "subject": "Civil Engineering",
-    "questions": [
-        {
-            "id": 1,
-            "text": "What is the primary ingredient that gives cement its binding property?",
-            "option_a": "Gypsum",
-            "option_b": "Clay",
-            "option_c": "Lime",
-            "option_d": "Silica",
-            "correct_answer": "C"
-        },
-        {
-            "id": 2,
-            "text": "Which test is used to determine the workability of concrete?",
-            "option_a": "Slump Test",
-            "option_b": "Compression Test",
-            "option_c": "Tensile Test",
-            "option_d": "Impact Test",
-            "correct_answer": "A"
-        },
-        {
-            "id": 3,
-            "text": "Which of the following is NOT a type of foundation?",
-            "option_a": "Shallow Foundation",
-            "option_b": "Deep Foundation",
-            "option_c": "Spread Foundation",
-            "option_d": "Rotating Foundation",
-            "correct_answer": "D"
-        },
-        {
-            "id": 4,
-            "text": "What is the typical water-cement ratio for good concrete?",
-            "option_a": "0.4 to 0.6",
-            "option_b": "1.0 to 1.5",
-            "option_c": "0.1 to 0.2",
-            "option_d": "0.8 to 1.0",
-            "correct_answer": "A"
-        },
-        {
-            "id": 5,
-            "text": "Which of the following materials is most commonly used for road pavement?",
-            "option_a": "Asphalt",
-            "option_b": "Brick",
-            "option_c": "Glass",
-            "option_d": "Lead",
-            "correct_answer": "A"
-        },
-        {
-            "id": 6,
-            "text": "What does the term 'curing' refer to in concrete construction?",
-            "option_a": "Hardening concrete by maintaining moisture",
-            "option_b": "Breaking old concrete",
-            "option_c": "Painting the surface",
-            "option_d": "Removing the formwork",
-            "correct_answer": "A"
-        },
-        {
-            "id": 7,
-            "text": "Which of the following loads is NOT a live load?",
-            "option_a": "Furniture load",
-            "option_b": "Moving vehicle load",
-            "option_c": "Wind load",
-            "option_d": "Human occupancy load",
-            "correct_answer": "C"
-        },
-        {
-            "id": 8,
-            "text": "Which instrument is used for measuring angles in surveying?",
-            "option_a": "Theodolite",
-            "option_b": "Barometer",
-            "option_c": "Hygrometer",
-            "option_d": "Compass",
-            "correct_answer": "A"
-        },
-        {
-            "id": 9,
-            "text": "Which brick manufacturing process provides the highest strength?",
-            "option_a": "Wire-cut bricks",
-            "option_b": "Hand-molded bricks",
-            "option_c": "Sun-dried bricks",
-            "option_d": "Pressed bricks",
-            "correct_answer": "D"
-        },
-        {
-            "id": 10,
-            "text": "Which of the following is used to prevent soil erosion along riverbanks?",
-            "option_a": "Retaining walls",
-            "option_b": "Dams",
-            "option_c": "Gabions",
-            "option_d": "Bridges",
-            "correct_answer": "C"
-        }
-    ]
+  "subject": "Civil Engineering",
+  "questions": [
+    /* ================================
+       CRITICAL THINKING (5)
+       ================================ */
+    {
+      "id": 1,
+      "text": "A crack appears in a newly constructed wall. What should be checked first?",
+      "option_a": "Material quality and curing",
+      "option_b": "Wall paint",
+      "option_c": "Window color",
+      "option_d": "Tile design",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+    {
+      "id": 2,
+      "text": "Why are foundations essential in buildings?",
+      "option_a": "To transfer load safely to the ground",
+      "option_b": "To decorate the building",
+      "option_c": "To add height",
+      "option_d": "To reduce cost",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+    {
+      "id": 3,
+      "text": "A construction site shows water seepage. What is the immediate concern?",
+      "option_a": "Structural weakening",
+      "option_b": "Aesthetic issues",
+      "option_c": "Painting cost",
+      "option_d": "Lighting",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+    {
+      "id": 4,
+      "text": "The concrete surface appears powdery. What is the likely cause?",
+      "option_a": "Poor curing",
+      "option_b": "Wrong paint",
+      "option_c": "Air pollution",
+      "option_d": "Tile gaps",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+    {
+      "id": 5,
+      "text": "A beam deflects excessively. What should be checked first?",
+      "option_a": "Reinforcement details",
+      "option_b": "Beam color",
+      "option_c": "Cement brand",
+      "option_d": "Window size",
+      "correct_answer": "A",
+      "competency_type": "critical_thinking"
+    },
+
+    /* ================================
+       COMMUNICATION (5)
+       ================================ */
+    {
+      "id": 6,
+      "text": "Which instruction is most precise?",
+      "option_a": "Mix concrete in 1:2:4 ratio",
+      "option_b": "Use some cement",
+      "option_c": "Add more sand",
+      "option_d": "Mix properly",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+    {
+      "id": 7,
+      "text": "Why are standard symbols used in civil drawings?",
+      "option_a": "For universal understanding",
+      "option_b": "Decoration",
+      "option_c": "Marketing",
+      "option_d": "Aesthetics",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+    {
+      "id": 8,
+      "text": "Best way to report construction deviation?",
+      "option_a": "Clear written + verbal report",
+      "option_b": "Tell a friend",
+      "option_c": "Ignore it",
+      "option_d": "Discuss later",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+    {
+      "id": 9,
+      "text": "What is the purpose of a site diary?",
+      "option_a": "Record daily construction activities",
+      "option_b": "Drawing pictures",
+      "option_c": "Decoration",
+      "option_d": "Painting schedules",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+    {
+      "id": 10,
+      "text": "Which statement is clear and measurable?",
+      "option_a": "Compact soil to 95% density",
+      "option_b": "Compact soil well",
+      "option_c": "Make soil hard",
+      "option_d": "Finish quickly",
+      "correct_answer": "A",
+      "competency_type": "communication"
+    },
+
+    /* ================================
+       ADAPTABILITY (2)
+       ================================ */
+    {
+      "id": 11,
+      "text": "A new construction method is introduced. How should an engineer respond?",
+      "option_a": "Learn and adapt",
+      "option_b": "Reject it",
+      "option_c": "Ignore",
+      "option_d": "Complain",
+      "correct_answer": "A",
+      "competency_type": "adaptability"
+    },
+    {
+      "id": 12,
+      "text": "When site conditions change suddenly, the engineer should:",
+      "option_a": "Revise plan quickly",
+      "option_b": "Stop work",
+      "option_c": "Panic",
+      "option_d": "Wait for days",
+      "correct_answer": "A",
+      "competency_type": "adaptability"
+    },
+
+    /* ================================
+       BASIC ENGINEERING (5)
+       ================================ */
+    {
+      "id": 13,
+      "text": "What is the main ingredient in cement?",
+      "option_a": "Limestone",
+      "option_b": "Clay tiles",
+      "option_c": "Sand",
+      "option_d": "Wood",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+    {
+      "id": 14,
+      "text": "What is the unit of force?",
+      "option_a": "Newton",
+      "option_b": "Pascal",
+      "option_c": "Joule",
+      "option_d": "Litre",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+    {
+      "id": 15,
+      "text": "What is concrete?",
+      "option_a": "Mixture of cement, sand, and aggregate",
+      "option_b": "Only sand",
+      "option_c": "Only cement",
+      "option_d": "Only water",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+    {
+      "id": 16,
+      "text": "Which test measures concrete strength?",
+      "option_a": "Compression test",
+      "option_b": "Color test",
+      "option_c": "Tension test",
+      "option_d": "Viscosity test",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+    {
+      "id": 17,
+      "text": "Surveying instrument used for measuring angles:",
+      "option_a": "Theodolite",
+      "option_b": "Hammer",
+      "option_c": "Compass",
+      "option_d": "Brush",
+      "correct_answer": "A",
+      "competency_type": "basic_engineering"
+    },
+
+    /* ================================
+       TECHNICAL (8) – BASIC LEVEL
+       ================================ */
+    {
+      "id": 18,
+      "text": "Which cement is used for quick setting?",
+      "option_a": "Rapid hardening cement",
+      "option_b": "White cement",
+      "option_c": "Portland slag",
+      "option_d": "Low heat cement",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 19,
+      "text": "What increases workability of concrete?",
+      "option_a": "Adding water",
+      "option_b": "Adding stones",
+      "option_c": "Reducing sand",
+      "option_d": "Reducing cement",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 20,
+      "text": "Which material is used as reinforcement?",
+      "option_a": "Steel",
+      "option_b": "Brick",
+      "option_c": "Glass",
+      "option_d": "Wood",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 21,
+      "text": "Purpose of curing concrete:",
+      "option_a": "Prevent moisture loss",
+      "option_b": "Change color",
+      "option_c": "Reduce weight",
+      "option_d": "Increase cracks",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 22,
+      "text": "Which soil has highest compressibility?",
+      "option_a": "Clay",
+      "option_b": "Sand",
+      "option_c": "Gravel",
+      "option_d": "Rock",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 23,
+      "text": "Which test identifies soil type?",
+      "option_a": "Atterberg limits",
+      "option_b": "Slump test",
+      "option_c": "Compression test",
+      "option_d": "Impact test",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 24,
+      "text": "What is slump test used for?",
+      "option_a": "Workability of concrete",
+      "option_b": "Steel strength",
+      "option_c": "Hardness",
+      "option_d": "Curing rate",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    },
+    {
+      "id": 25,
+      "text": "Which foundation is used for soft soil?",
+      "option_a": "Pile foundation",
+      "option_b": "Shallow footing",
+      "option_c": "Raft foundation",
+      "option_d": "No foundation needed",
+      "correct_answer": "A",
+      "competency_type": "technical"
+    }
+  ]
 }

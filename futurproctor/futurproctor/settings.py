@@ -31,9 +31,17 @@ import cloudinary
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+#DEVELOPMENT MODE
+DEBUG = True
+ALLOWED_HOSTS = ['*']  
+
+
+#PRODUCTION MODE
+#DEBUG = False
+#ALLOWED_HOSTS = ['arciteproctoring.in', 'www.arciteproctoring.in', '13.204.65.70']
+
+# ************************************************************************************
 
 # Application definition
 
@@ -127,9 +135,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Static files
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-
-
 
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

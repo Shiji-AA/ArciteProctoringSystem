@@ -29,7 +29,15 @@
         <div class="success-card">
             <i class="fas fa-check-circle success-icon"></i> <!-- Large tick mark icon -->
             <h2 class="text-success">Exam Successfully Completed!</h2>
-            <p class="mt-3">Your result has been recorded. Click the button below to return to the home page.</p>
+            <p class="mt-3">Your result has been recorded.</p>
+
+            <!-- ⭐ Added Button here -->
+            <div class="mt-4">
+                <a href="{% url 'student_result' %}" class="btn btn-primary btn-lg px-5">
+                    View Detailed Skill Report
+                </a>
+            </div>
+
             <button class="btn btn-success btn-lg mt-3 px-5" onclick="window.location.href='/'">OK</button>
         </div>
     </div>
